@@ -1,5 +1,6 @@
 plugins {
     kotlin("multiplatform") version "1.6.10"
+    kotlin("plugin.serialization") version "1.6.10"
 }
 
 group = "fi.schro"
@@ -32,6 +33,9 @@ kotlin {
             dependencies {
                 implementation("io.insert-koin:koin-core:3.1.5")
                 implementation("com.github.ajalt.clikt:clikt:3.4.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+                implementation("io.ktor:ktor-client-core:1.6.7")
+                implementation("io.ktor:ktor-client-cio:1.6.7")
             }
         }
         val nativeTest by getting
