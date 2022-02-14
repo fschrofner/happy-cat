@@ -3,8 +3,8 @@ package fi.schro.data
 import fi.schro.ui.LightPowerState
 
 interface LightRepository {
-    fun setLightStatus(lightAddress: String, status: LightStatus)
-    fun getLightStatus(lightAddress: String): LightStatus
+    suspend fun setLightStatus(lightAddress: String, port: Int? = null, status: LightStatus)
+    suspend fun getLightStatus(lightAddress: String, port: Int? = null): LightStatus
 }
 
 data class LightStatus(

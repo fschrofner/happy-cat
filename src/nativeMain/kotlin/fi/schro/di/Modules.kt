@@ -7,6 +7,7 @@ import fi.schro.ui.GetCommand
 import fi.schro.ui.SetCommand
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
+import io.ktor.client.features.json.*
 import org.koin.dsl.module
 
 val commandModule = module {
@@ -16,11 +17,13 @@ val commandModule = module {
 }
 
 val dataModule = module {
-    single<LightRepository> { ElgatoLightRepository() }
+    single<LightRepository> { ElgatoLightRepository(get()) }
 }
 
 val networkModule = module {
-    single<HttpClient> { HttpClient(CIO) }
+    single<HttpClient> { HttpClient(CIO){
+        install(JsonFeature)
+    }}
 }
 
 val mainModule = listOf(

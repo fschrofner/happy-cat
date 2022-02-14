@@ -8,6 +8,7 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.enum
 import com.github.ajalt.clikt.parameters.types.int
 import fi.schro.data.LightRepository
+import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -58,8 +59,10 @@ class GetCommand(
     private val targetLamp: String by argument(ARG_TARGET_LAMP)
 
     override fun run() {
-        val status = lightRepository.getLightStatus(targetLamp)
-        echo(status)
+        runBlocking {
+            val status = lightRepository.getLightStatus(targetLamp)
+            echo(status)
+        }
     }
 }
 

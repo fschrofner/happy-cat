@@ -28,6 +28,13 @@ kotlin {
             }
         }
     }
+
+    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
+        binaries.all {
+            freeCompilerArgs += "-Xdisable-phases=EscapeAnalysis"
+        }
+    }
+
     sourceSets {
         val nativeMain by getting {
             dependencies {
@@ -36,6 +43,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
                 implementation("io.ktor:ktor-client-core:1.6.7")
                 implementation("io.ktor:ktor-client-cio:1.6.7")
+                implementation("io.ktor:ktor-client-serialization:1.6.7")
             }
         }
         val nativeTest by getting
