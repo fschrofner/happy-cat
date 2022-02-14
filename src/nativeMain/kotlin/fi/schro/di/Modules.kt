@@ -12,7 +12,7 @@ import org.koin.dsl.module
 
 val commandModule = module {
     single{ ApplyCommand() }
-    single{ SetCommand() }
+    single{ SetCommand(get()) }
     single{ GetCommand(get()) }
 }
 

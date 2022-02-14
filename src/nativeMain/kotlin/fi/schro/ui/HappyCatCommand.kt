@@ -8,6 +8,7 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.enum
 import com.github.ajalt.clikt.parameters.types.int
 import fi.schro.data.LightRepository
+import fi.schro.data.LightStatus
 import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -31,7 +32,9 @@ class HappyCatCommand: CliktCommand(), KoinComponent {
     override fun run() = Unit
 }
 
-class SetCommand: CliktCommand(name = "set", help = "Sets the defined values to the specified light"){
+class SetCommand(
+    private val lightRepository: LightRepository
+): CliktCommand(name = "set", help = "Sets the defined values to the specified light"){
     private val targetLamp: String by argument(ARG_TARGET_LAMP)
     private val brightness: Int? by option(
         "-b",
@@ -49,7 +52,15 @@ class SetCommand: CliktCommand(name = "set", help = "Sets the defined values to 
 
 
     override fun run() {
-        echo("Values set")
+        val status = LightStatus(
+            powerState = powerState,
+            brightness = brightness,
+            temperature = temperature
+        )
+
+        runBlocking {
+            lightRepository.setLightStatus(lightAddress = targetLamp, status = status)
+        }
     }
 }
 

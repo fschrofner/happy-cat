@@ -3,13 +3,15 @@ package fi.schro.data
 import fi.schro.ui.LightPowerState
 import io.ktor.client.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
 import io.ktor.utils.io.core.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import platform.posix.stat
 import kotlin.math.roundToInt
 
 class ElgatoLightRepository(private val httpClient: HttpClient): LightRepository {
-    //TODO: add light endpoint constant
     private val PATH_SEPARATOR = "/"
     private val DEFAULT_PATH = "elgato"
     private val LIGHT_PATH = "lights"
@@ -19,18 +21,29 @@ class ElgatoLightRepository(private val httpClient: HttpClient): LightRepository
     val ACCESSORY_INFO_ENDPOINT = listOf(DEFAULT_PATH, ACCESSORY_INFO_PATH)
 
     override suspend fun setLightStatus(lightAddress: String, port: Int?, status: LightStatus) {
-        TODO("Not yet implemented")
+        val elgatoStatus = ElgatoLightStatus.fromLightStatus(status)
+
+        httpClient.use {
+            val response: HttpResponse = it.put(createUrl(lightAddress, port, LIGHT_ENDPOINT)){
+                contentType(ContentType.Application.Json)
+                body = elgatoStatus
+            }
+        }
     }
 
     override suspend fun getLightStatus(lightAddress: String, port: Int?): LightStatus {
         httpClient.use {
-            val status = httpClient.get<ElgatoLightStatus>("http://" + lightAddress + ":" + (port ?: 9123) + createPath(LIGHT_ENDPOINT))
+            val status = it.get<ElgatoLightStatus>(createUrl(lightAddress, port, LIGHT_ENDPOINT))
             return status.toLightStatus()
         }
     }
 
     private fun createPath(pathElements: List<String>): String {
         return pathElements.joinToString(separator = PATH_SEPARATOR, prefix = PATH_SEPARATOR)
+    }
+
+    private fun createUrl(lightAddress: String, port: Int?, endpoint: List<String>): String {
+        return "http://" + lightAddress + ":" + (port ?: 9123) + createPath(endpoint)
     }
 }
 
@@ -42,6 +55,14 @@ data class ElgatoLightStatus(
     fun toLightStatus(): LightStatus {
         return lights.first().toLightStatus()
     }
+
+    companion object {
+        fun fromLightStatus(status: LightStatus): ElgatoLightStatus {
+            return ElgatoLightStatus(listOf(
+                ElgatoLight.fromLightStatus(status)
+            ))
+        }
+    }
 }
 
 @Serializable
@@ -52,15 +73,26 @@ data class ElgatoLight(
 ){
     fun toLightStatus(): LightStatus {
         return LightStatus(
-            powerStatus = on?.let { LightPowerState.fromInt(it) },
+            powerState = on?.let { LightPowerState.fromInt(it) },
             brightness = brightness,
             temperature = temperature?.let { convertElgatoTemperatureToKelvin(it) }
             )
     }
+
+    companion object {
+        fun fromLightStatus(status: LightStatus): ElgatoLight {
+            return ElgatoLight(
+                on = status.powerState?.intValue,
+                brightness = status.brightness,
+                temperature = status.temperature?.let { convertKelvinToElgatoTemperature(it) }
+            )
+        }
+    }
 }
 
 private fun convertKelvinToElgatoTemperature(kelvinTemperature: Int): Int {
-    TODO("todo")
+    //TODO: implement real conversion
+    return 319
 }
 
 private fun convertElgatoTemperatureToKelvin(elgatoTemperature: Int): Int {
