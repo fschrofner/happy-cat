@@ -16,7 +16,7 @@ import org.koin.core.component.inject
 const val ARG_TARGET_LAMP = "TARGET_LAMP"
 const val ARG_CONFIGURATION_FILE = "CONFIGURATION_FILE"
 
-class HappyCatCommand: CliktCommand(), KoinComponent {
+class HappyCatCommand: CliktCommand(name = "hc", help = "A commandline utility to control your elgato keylight"), KoinComponent {
     private val applyCommand: ApplyCommand by inject()
     private val getCommand: GetCommand by inject()
     private val setCommand: SetCommand by inject()
@@ -48,12 +48,12 @@ class SetCommand(
             it in 1000..10000
         }
 
-    private val powerState: LightPowerState? by option("-p", "--powerstate", help = "The state to be set").enum<LightPowerState>()
+    private val powerStatus: LightPowerStatus? by option("-p", "--power", help = "The power status to be set").enum<LightPowerStatus>()
 
 
     override fun run() {
         val status = LightStatus(
-            powerState = powerState,
+            powerStatus = powerStatus,
             brightness = brightness,
             temperature = temperature
         )
@@ -86,12 +86,12 @@ class ApplyCommand: CliktCommand(name = "apply", help = "Applies the given confi
     }
 }
 
-enum class LightPowerState(val stringValue: String, val intValue: Int) {
+enum class LightPowerStatus(val stringValue: String, val intValue: Int) {
     ON("ON", 1),
     OFF("OFF", 0);
 
     companion object {
-        fun fromInt(intValue: Int): LightPowerState? {
+        fun fromInt(intValue: Int): LightPowerStatus? {
             return values().firstOrNull { it.intValue == intValue }
         }
     }

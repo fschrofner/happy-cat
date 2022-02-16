@@ -1,6 +1,6 @@
 package fi.schro.data
 
-import fi.schro.ui.LightPowerState
+import fi.schro.ui.LightPowerStatus
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -8,7 +8,6 @@ import io.ktor.http.*
 import io.ktor.utils.io.core.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import platform.posix.stat
 import kotlin.math.roundToInt
 
 class ElgatoLightRepository(private val httpClient: HttpClient): LightRepository {
@@ -73,7 +72,7 @@ data class ElgatoLight(
 ){
     fun toLightStatus(): LightStatus {
         return LightStatus(
-            powerState = on?.let { LightPowerState.fromInt(it) },
+            powerStatus = on?.let { LightPowerStatus.fromInt(it) },
             brightness = brightness,
             temperature = temperature?.let { convertElgatoTemperatureToKelvin(it) }
             )
@@ -82,7 +81,7 @@ data class ElgatoLight(
     companion object {
         fun fromLightStatus(status: LightStatus): ElgatoLight {
             return ElgatoLight(
-                on = status.powerState?.intValue,
+                on = status.powerStatus?.intValue,
                 brightness = status.brightness,
                 temperature = status.temperature?.let { convertKelvinToElgatoTemperature(it) }
             )
@@ -90,9 +89,10 @@ data class ElgatoLight(
     }
 }
 
+//TODO: these calculations seem weird, maybe they could be improved
 private fun convertKelvinToElgatoTemperature(kelvinTemperature: Int): Int {
-    //TODO: implement real conversion
-    return 319
+    //based on: https://github.com/justinforlenza/keylight-control/blob/main/src/keylight.js
+    return (((kelvinTemperature - 1993300/201f) * 201f)/-4100f).roundToInt()
 }
 
 private fun convertElgatoTemperatureToKelvin(elgatoTemperature: Int): Int {

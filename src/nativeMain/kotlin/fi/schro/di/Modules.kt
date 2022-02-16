@@ -1,5 +1,7 @@
 package fi.schro.di
 
+import fi.schro.data.ConfigurationRepository
+import fi.schro.data.ConfigurationRepositoryImpl
 import fi.schro.data.ElgatoLightRepository
 import fi.schro.data.LightRepository
 import fi.schro.ui.ApplyCommand
@@ -18,6 +20,7 @@ val commandModule = module {
 
 val dataModule = module {
     single<LightRepository> { ElgatoLightRepository(get()) }
+    single<ConfigurationRepository> { ConfigurationRepositoryImpl(get()) }
 }
 
 val networkModule = module {
