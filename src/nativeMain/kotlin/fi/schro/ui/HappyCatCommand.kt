@@ -7,6 +7,7 @@ import com.github.ajalt.clikt.parameters.options.check
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.enum
 import com.github.ajalt.clikt.parameters.types.int
+import fi.schro.data.ConfigurationRepository
 import fi.schro.data.LightRepository
 import fi.schro.data.LightStatus
 import kotlinx.coroutines.runBlocking
@@ -77,12 +78,16 @@ class GetCommand(
     }
 }
 
-class ApplyCommand: CliktCommand(name = "apply", help = "Applies the given configuration to the specified light"){
+class ApplyCommand(
+    private val configurationRepository: ConfigurationRepository
+): CliktCommand(name = "apply", help = "Applies the given configuration to the specified light"){
     private val configurationFile: String by argument(ARG_CONFIGURATION_FILE)
     private val targetLamp: String by argument(ARG_TARGET_LAMP)
 
     override fun run() {
-        echo("Configuration applied")
+        runBlocking {
+            configurationRepository.applyConfiguration(configurationFile, targetLamp)
+        }
     }
 }
 

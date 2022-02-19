@@ -41,6 +41,7 @@ kotlin {
                 implementation("io.insert-koin:koin-core:3.1.5")
                 implementation("com.github.ajalt.clikt:clikt:3.4.0")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
                 implementation("io.ktor:ktor-client-core:1.6.7")
                 implementation("io.ktor:ktor-client-cio:1.6.7")
                 implementation("io.ktor:ktor-client-serialization:1.6.7")

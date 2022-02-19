@@ -13,7 +13,7 @@ import io.ktor.client.features.json.*
 import org.koin.dsl.module
 
 val commandModule = module {
-    single{ ApplyCommand() }
+    single{ ApplyCommand(get()) }
     single{ SetCommand(get()) }
     single{ GetCommand(get()) }
 }
