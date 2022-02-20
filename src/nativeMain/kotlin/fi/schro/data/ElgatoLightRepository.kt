@@ -8,13 +8,20 @@ import io.ktor.http.*
 import io.ktor.utils.io.core.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import kotlin.math.roundToInt
 
-class ElgatoLightRepository(private val httpClient: HttpClient): LightRepository {
+class ElgatoLightRepository: LightRepository, KoinComponent {
     private val PATH_SEPARATOR = "/"
     private val DEFAULT_PATH = "elgato"
     private val LIGHT_PATH = "lights"
     private val ACCESSORY_INFO_PATH = "accessory-info"
+
+    //needs a new http client for every request
+    private val httpClient: HttpClient get() {
+        return get()
+    }
 
     val LIGHT_ENDPOINT = listOf(DEFAULT_PATH, LIGHT_PATH)
     val ACCESSORY_INFO_ENDPOINT = listOf(DEFAULT_PATH, ACCESSORY_INFO_PATH)

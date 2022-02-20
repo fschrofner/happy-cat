@@ -10,7 +10,7 @@ import com.github.ajalt.clikt.parameters.types.int
 import fi.schro.data.ConfigurationRepository
 import fi.schro.data.LightRepository
 import fi.schro.data.LightStatus
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -19,12 +19,14 @@ const val ARG_CONFIGURATION_FILE = "CONFIGURATION_FILE"
 
 class HappyCatCommand: CliktCommand(name = "hc", help = "A commandline utility to control your elgato keylight"), KoinComponent {
     private val applyCommand: ApplyCommand by inject()
+    private val daemonCommand: DaemonCommand by inject()
     private val getCommand: GetCommand by inject()
     private val setCommand: SetCommand by inject()
 
     init {
         subcommands(
             applyCommand,
+            daemonCommand,
             getCommand,
             setCommand
         )
@@ -80,13 +82,34 @@ class GetCommand(
 
 class ApplyCommand(
     private val configurationRepository: ConfigurationRepository
-): CliktCommand(name = "apply", help = "Applies the given configuration to the specified light"){
+): CliktCommand(name = "apply", help = "Applies the currently valid configuration inside the configuration file to the specified light"){
     private val configurationFile: String by argument(ARG_CONFIGURATION_FILE)
     private val targetLamp: String by argument(ARG_TARGET_LAMP)
 
     override fun run() {
         runBlocking {
             configurationRepository.applyConfiguration(configurationFile, targetLamp)
+        }
+    }
+}
+
+class DaemonCommand(
+    private val configurationRepository: ConfigurationRepository
+): CliktCommand(name = "daemon", help = "Starts a daemon which applies the currently valid configuration inside the configuration file every minute"){
+    private val configurationFile: String by argument(ARG_CONFIGURATION_FILE)
+    private val targetLamp: String by argument(ARG_TARGET_LAMP)
+
+    override fun run() {
+        runBlocking {
+            while(isActive){
+                //continue daemon even if applying configuration failed once
+                try {
+                    configurationRepository.applyConfiguration(configurationFile, targetLamp)
+                } catch (exception: Exception){
+                    echo(exception)
+                }
+                delay(1000 * 60)
+            }
         }
     }
 }

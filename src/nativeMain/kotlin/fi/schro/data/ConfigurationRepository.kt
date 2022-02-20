@@ -23,8 +23,6 @@ class ConfigurationRepositoryImpl(
         val statusToApply = determineCurrentStatus(configuration)
 
         statusToApply?.let { newStatus ->
-            echo("applying new status:")
-            echo(newStatus.toString())
             applyLightStatus(lightAddress, port, newStatus)
         }
     }
@@ -47,6 +45,8 @@ class ConfigurationRepositoryImpl(
     private suspend fun applyLightStatus(lightAddress: String, port: Int?, status: LightStatus){
         val currentStatus = lightRepository.getLightStatus(lightAddress)
         currentStatus.getNecessaryChanges(status)?.let { statusUpdate ->
+            echo("applying status changes:")
+            echo(statusUpdate)
             lightRepository.setLightStatus(lightAddress, port, statusUpdate)
         }
     }
