@@ -76,3 +76,6 @@ Timeframes can cross midnight, but *must not* overlap. If there are overlapping 
 
 ## Automation
 Probably one could automate the setup using systemd and/or cronjobs, but so far I didn't get to that.
+
+## License
+This software is licensed under the MPL 2.0, see the [LICENSE](LICENSE) file.
