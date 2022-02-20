@@ -15,6 +15,8 @@ interface ConfigurationRepository {
 class ConfigurationRepositoryImpl(
     private val lightRepository: LightRepository
 ): ConfigurationRepository {
+    private val timezone = TimeZone.currentSystemDefault()
+
     override suspend fun applyConfiguration(configurationFilePath: String, lightAddress: String, port: Int?) {
         val configString = FileUtil.readAllText(configurationFilePath)
         val configuration = Json.decodeFromString<Configuration>(configString)
@@ -28,13 +30,17 @@ class ConfigurationRepositoryImpl(
     }
 
     private fun determineCurrentStatus(configuration: Configuration): LightStatus? {
-        val currentTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        val currentTime = Clock.System.now().toLocalDateTime(timezone)
         val currentDate = TimeUtil.getCurrentDate()
 
         return configuration.config.firstOrNull { timedConfiguration ->
             val start = currentDate.atTime(timedConfiguration.start)
             val end = currentDate.atTime(timedConfiguration.end)
-            currentTime in start..end
+
+            //timespan crosses midnight
+            if(start > end){
+                currentTime in currentDate.atTime(0,0) .. end || currentTime in start .. currentDate.atTime(24, 0)
+            } else currentTime in start..end
         }?.status
     }
 

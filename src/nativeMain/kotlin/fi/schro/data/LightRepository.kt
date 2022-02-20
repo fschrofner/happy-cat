@@ -11,9 +11,9 @@ interface LightRepository {
 
 @Serializable
 data class LightStatus(
-    @SerialName("power") val powerStatus: LightPowerStatus?,
-    @SerialName("brightness") val brightness: Int?,
-    @SerialName("temperature") val temperature: Int?
+    @SerialName("power") val powerStatus: LightPowerStatus? = null,
+    @SerialName("brightness") val brightness: Int? = null,
+    @SerialName("temperature") val temperature: Int? = null
 ){
     override fun toString(): String {
         val stringList = mutableListOf<String>()
