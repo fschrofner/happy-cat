@@ -45,7 +45,8 @@ class ConfigurationRepositoryImpl(
 
             //timespan crosses midnight
             if(start > end){
-                currentTime in currentDate.atTime(0,0) .. end || currentTime in start .. currentDate.atTime(24, 0)
+                currentTime in currentDate.atTime(0,0) .. end
+                        || currentTime in start .. currentDate.plus(1, DateTimeUnit.DAY).atTime(0,0)
             } else currentTime in start..end
         }?.status
     }

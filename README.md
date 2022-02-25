@@ -1,15 +1,14 @@
 # Happy Cat 🐈🌞
-A commandline utility to control your [Elgato Key Light](https://www.elgato.com/de/key-light) and [Key Light Air](https://www.elgato.com/de/key-light-air).  
+A commandline utility to control your [Elgato Key Light](https://www.elgato.com/en/key-light) and [Key Light Air](https://www.elgato.com/en/key-light-air).
 Change your light settings easily inside scripts or use configuration files to automatically apply your preferred setup over the course of the day, possibly even exploring the use as a [light therapy](https://en.wikipedia.org/wiki/Light_therapy) device.
 
 ## Usage
-Happy cat is split up into multiple subcommands, each of which uses its own parameters.
+Happy cat is split up into multiple subcommands, each of which have their own parameters.
 To find out more about each command, check out the help pages by appending `--help` after the command.
 
-*Important: Although the Elgato API uses its own values for light temperature internally, the happy cat command line is intended to use Kelvin. However, the conversion is currently broken and might not work properly.*
-
+*Important: Happy cat uses Kelvin to measure light temperature, while Elgato lamps use their own format internally. Conversion between the two is done on the fly*
 #### Apply
-Reads the provided configuration file, determines the currently active state and applies the state to the given light once.
+Reads the provided configuration file, determines the currently active state based on time definitions and applies the state to the given light once.
 It's basically a oneshot version of the `daemon` command. For examples of the configuration file, check the corresponding paragraph below.  
 
 *Example*  
@@ -26,7 +25,7 @@ hc daemon ./elgato.config elgato.local
 ```
 
 #### Get
-Reads and prints the current configuration of the specified light.  
+Reads and prints the current status of the specified light.
 
 *Example*
 ```shell
@@ -76,6 +75,13 @@ Timeframes can cross midnight, but *must not* overlap. If there are overlapping 
 
 ## Automation
 Probably one could automate the setup using systemd and/or cronjobs, but so far I didn't get to that.
+
+## Building
+It should be enough to do a simple:
+```bash
+./gradlew build
+```
+You can then find the executable in `build/bin/native/releaseExecutable`.
 
 ## License
 This software is licensed under the MPL 2.0, see the [LICENSE](LICENSE) file.

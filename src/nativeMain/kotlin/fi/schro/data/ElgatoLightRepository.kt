@@ -8,7 +8,10 @@
 
 package fi.schro.data
 
+import fi.schro.data.ElgatoLightRepository.Companion.MAX_TEMPERATURE
+import fi.schro.data.ElgatoLightRepository.Companion.MIN_TEMPERATURE
 import fi.schro.ui.LightPowerStatus
+import fi.schro.util.clamp
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -21,6 +24,11 @@ import org.koin.core.component.get
 import kotlin.math.roundToInt
 
 class ElgatoLightRepository: LightRepository, KoinComponent {
+    companion object {
+        const val MIN_TEMPERATURE = 143
+        const val MAX_TEMPERATURE = 344
+    }
+
     private val PATH_SEPARATOR = "/"
     private val DEFAULT_PATH = "elgato"
     private val LIGHT_PATH = "lights"
@@ -104,13 +112,17 @@ data class ElgatoLight(
     }
 }
 
-//TODO: these calculations seem weird, maybe they could be improved
+//these calculations are based on the official elgato control center app 1.2.0 for android
 private fun convertKelvinToElgatoTemperature(kelvinTemperature: Int): Int {
-    //based on: https://github.com/justinforlenza/keylight-control/blob/main/src/keylight.js
-    return (((kelvinTemperature - 1993300/201f) * 201f)/-4100f).roundToInt()
+    return ((1000000/kelvinTemperature.toFloat()).roundToInt()).clamp(MIN_TEMPERATURE, MAX_TEMPERATURE)
 }
 
 private fun convertElgatoTemperatureToKelvin(elgatoTemperature: Int): Int {
-    //based on: https://github.com/justinforlenza/keylight-control/blob/main/src/keylight.js
-    return (((-4100*elgatoTemperature) / 201f) + 1993300/201f).roundToInt()
+    var value = (1000000/elgatoTemperature.toFloat()).roundToInt()
+
+    //round to closest multiple of 50
+    val remainder = value % 50
+    if(remainder > 25) value += 50
+
+    return value - remainder
 }
