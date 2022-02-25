@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "fi.schro"
-version = "0.0.1"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
@@ -23,7 +23,7 @@ kotlin {
 
     nativeTarget.apply {
         binaries {
-            executable {
+            executable("hc") {
                 entryPoint = "fi.schro.main"
             }
         }

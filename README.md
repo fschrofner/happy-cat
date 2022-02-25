@@ -81,7 +81,7 @@ It should be enough to do a simple:
 ```bash
 ./gradlew build
 ```
-You can then find the executable in `build/bin/native/releaseExecutable`.
+You can then find the executable in `build/bin/native/hcReleaseExecutable`.
 
 ## License
 This software is licensed under the MPL 2.0, see the [LICENSE](LICENSE) file.
