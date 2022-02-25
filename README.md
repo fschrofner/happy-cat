@@ -2,6 +2,8 @@
 A commandline utility to control your [Elgato Key Light](https://www.elgato.com/en/key-light) and [Key Light Air](https://www.elgato.com/en/key-light-air).
 Change your light settings easily inside scripts or use configuration files to automatically apply your preferred setup over the course of the day, possibly even exploring the use as a [light therapy](https://en.wikipedia.org/wiki/Light_therapy) device.
 
+Please report issues, bugs or feature requests [here](https://codeberg.org/schrofi/happy-cat/issues).
+
 ## Usage
 Happy cat is split up into multiple subcommands, each of which have their own parameters.
 To find out more about each command, check out the help pages by appending `--help` after the command.
