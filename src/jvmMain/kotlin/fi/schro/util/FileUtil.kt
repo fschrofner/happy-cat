@@ -6,17 +6,14 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package fi.schro
+package fi.schro.util
 
-import fi.schro.di.nativeModules
-import fi.schro.ui.HappyCatCommand
-import org.koin.core.context.startKoin
+import java.io.File
 
-fun main(args: Array<String>) {
-    startKoin {
-        modules(nativeModules)
+class FileUtilImpl: FileUtil {
+    override fun readAllText(filePath: String): String {
+        return File(filePath).inputStream().use {
+            it.readBytes().toString(Charsets.UTF_8)
+        }
     }
-
-    HappyCatCommand()
-        .main(args)
 }

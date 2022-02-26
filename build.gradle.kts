@@ -9,16 +9,28 @@ val ktorVersion: String by project
 plugins {
     kotlin("multiplatform") version "1.6.10"
     kotlin("plugin.serialization") version "1.6.10"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
+    application
 }
 
 group = "fi.schro"
 version = toolVersion
+
+application {
+    mainClass.set("fi.schro.Main")
+}
 
 repositories {
     mavenCentral()
 }
 
 kotlin {
+    //java compilation
+    jvm {
+        withJava()
+    }
+
+    //native compilation
     val hostOs = System.getProperty("os.name")
 
     val nativeTarget = when {
@@ -53,9 +65,11 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:$datetimeVersion")
                 implementation("io.ktor:ktor-client-core:$ktorVersion")
                 implementation("io.ktor:ktor-client-cio:$ktorVersion")
+                implementation("io.ktor:ktor-client-serialization:$ktorVersion")
             }
         }
         val commonTest by getting
         val nativeMain by getting
+        val jvmMain by getting
     }
 }

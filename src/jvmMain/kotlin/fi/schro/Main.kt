@@ -8,15 +8,18 @@
 
 package fi.schro
 
-import fi.schro.di.nativeModules
+import fi.schro.di.jvmModules
 import fi.schro.ui.HappyCatCommand
 import org.koin.core.context.startKoin
 
-fun main(args: Array<String>) {
-    startKoin {
-        modules(nativeModules)
-    }
+object Main {
+    @JvmStatic
+    fun main(args: Array<String>) {
+        startKoin {
+            modules(jvmModules)
+        }
 
-    HappyCatCommand()
-        .main(args)
+        HappyCatCommand()
+            .main(args)
+    }
 }

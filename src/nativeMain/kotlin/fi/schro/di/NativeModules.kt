@@ -8,6 +8,9 @@
 
 package fi.schro.di
 
+import fi.schro.util.FileUtil
+import fi.schro.util.FileUtilImpl
+import org.koin.dsl.module
 import fi.schro.data.ConfigurationRepository
 import fi.schro.data.ConfigurationRepositoryImpl
 import fi.schro.data.ElgatoLightRepository
@@ -16,17 +19,16 @@ import fi.schro.ui.ApplyCommand
 import fi.schro.ui.DaemonCommand
 import fi.schro.ui.GetCommand
 import fi.schro.ui.SetCommand
-import fi.schro.util.FileUtil
-import fi.schro.util.FileUtilImpl
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
+import io.ktor.client.features.json.*
 import org.koin.dsl.module
 
 val commandModule = module {
-    single{ ApplyCommand(get()) }
-    single{ DaemonCommand(get()) }
-    single{ SetCommand(get()) }
-    single{ GetCommand(get()) }
+    single { ApplyCommand(get()) }
+    single { DaemonCommand(get()) }
+    single { SetCommand(get()) }
+    single { GetCommand(get()) }
 }
 
 val dataModule = module {
@@ -36,14 +38,18 @@ val dataModule = module {
 
 val networkModule = module {
     //HttpClient has to be recreated every time it is used
-    factory<HttpClient> { HttpClient(CIO)}
+    factory<HttpClient> {
+        HttpClient(CIO) {
+            install(JsonFeature)
+        }
+    }
 }
 
 val fileModule = module {
     single<FileUtil> { FileUtilImpl() }
 }
 
-val mainModule = listOf(
+val nativeModules = listOf(
     commandModule,
     dataModule,
     networkModule,

@@ -4,6 +4,11 @@ Change your light settings easily inside scripts or use configuration files to a
 
 Please report issues, bugs or feature requests [here](https://codeberg.org/schrofi/happy-cat/issues).
 
+## Running
+Download the newest release for your system from the [releases page](https://codeberg.org/schrofi/happy-cat/releases).  
+On Linux and Mac OS you can run the native binaries by simply executing `./hc`.  
+On all other systems you have to resort to java by running the jar like `java -jar ./hc.jar`
+
 ## Usage
 Happy cat is split up into multiple subcommands, each of which have their own parameters.
 To find out more about each command, check out the help pages by appending `--help` after the command.
@@ -79,11 +84,19 @@ Timeframes can cross midnight, but *must not* overlap. If there are overlapping 
 Probably one could automate the setup using systemd and/or cronjobs, but so far I didn't get to that.
 
 ## Building
-It should be enough to do a simple:
+### Linux and Mac OS
+To build native binaries run:
 ```bash
 ./gradlew nativeBinaries
 ```
 You can then find the executable in `build/bin/native/hcReleaseExecutable`.
+
+### Windows and others
+To build the Java package run:
+```bash
+./gradlew shadowJar
+```
+You can then find the jar in `build/libs`.
 
 ## License
 This software is licensed under the MPL 2.0, see the [LICENSE](LICENSE) file.
