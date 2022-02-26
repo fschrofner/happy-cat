@@ -16,8 +16,8 @@ import platform.posix.fclose
 import platform.posix.fgets
 import platform.posix.fopen
 
-object FileUtil {
-    fun readAllText(filePath: String): String {
+class FileUtilImpl: FileUtil {
+    override fun readAllText(filePath: String): String {
         val returnBuffer = StringBuilder()
         val file = fopen(filePath, "r") ?:
         throw IllegalArgumentException("Cannot open input file $filePath")

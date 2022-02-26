@@ -13,6 +13,7 @@ import fi.schro.data.ElgatoLightRepository.Companion.MIN_TEMPERATURE
 import fi.schro.ui.LightPowerStatus
 import fi.schro.util.clamp
 import io.ktor.client.*
+import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*

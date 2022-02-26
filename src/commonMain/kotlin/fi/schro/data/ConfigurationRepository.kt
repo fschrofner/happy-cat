@@ -21,12 +21,13 @@ interface ConfigurationRepository {
 }
 
 class ConfigurationRepositoryImpl(
-    private val lightRepository: LightRepository
+    private val lightRepository: LightRepository,
+    private val fileUtil: FileUtil
 ): ConfigurationRepository {
     private val timezone = TimeZone.currentSystemDefault()
 
     override suspend fun applyConfiguration(configurationFilePath: String, lightAddress: String, port: Int?) {
-        val configString = FileUtil.readAllText(configurationFilePath)
+        val configString = fileUtil.readAllText(configurationFilePath)
         val configuration = Json.decodeFromString<Configuration>(configString)
         val statusToApply = determineCurrentStatus(configuration)
 

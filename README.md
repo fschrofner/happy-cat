@@ -81,7 +81,7 @@ Probably one could automate the setup using systemd and/or cronjobs, but so far 
 ## Building
 It should be enough to do a simple:
 ```bash
-./gradlew build
+./gradlew nativeBinaries
 ```
 You can then find the executable in `build/bin/native/hcReleaseExecutable`.
 

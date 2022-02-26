@@ -16,9 +16,10 @@ import fi.schro.ui.ApplyCommand
 import fi.schro.ui.DaemonCommand
 import fi.schro.ui.GetCommand
 import fi.schro.ui.SetCommand
+import fi.schro.util.FileUtil
+import fi.schro.util.FileUtilImpl
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
-import io.ktor.client.features.json.*
 import org.koin.dsl.module
 
 val commandModule = module {
@@ -30,18 +31,21 @@ val commandModule = module {
 
 val dataModule = module {
     single<LightRepository> { ElgatoLightRepository() }
-    single<ConfigurationRepository> { ConfigurationRepositoryImpl(get()) }
+    single<ConfigurationRepository> { ConfigurationRepositoryImpl(get(), get()) }
 }
 
 val networkModule = module {
     //HttpClient has to be recreated every time it is used
-    factory<HttpClient> { HttpClient(CIO){
-        install(JsonFeature)
-    }}
+    factory<HttpClient> { HttpClient(CIO)}
+}
+
+val fileModule = module {
+    single<FileUtil> { FileUtilImpl() }
 }
 
 val mainModule = listOf(
     commandModule,
     dataModule,
-    networkModule
+    networkModule,
+    fileModule
 )
