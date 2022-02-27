@@ -21,3 +21,9 @@ jobs:
 
       - name: Execute Gradle build
         run: ./gradlew shadowJar
+
+      - name: Archive build
+        uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: build/libs/

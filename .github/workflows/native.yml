@@ -21,3 +21,9 @@ jobs:
 
     - name: Execute Gradle build
       run: ./gradlew nativeBinaries
+
+    - name: Archive build
+      uses: actions/upload-artifact@v2
+      with:
+        name: build
+        path: build/bin/native/hcReleaseExecutable/
